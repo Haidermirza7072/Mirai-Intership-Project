@@ -1,0 +1,173 @@
+{
+  "name": "2.Customer_Feedback",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Customer Feedback Form",
+        "formDescription": "Please share your feedback with us",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "What is Name ?"
+            },
+            {
+              "fieldLabel": "What is your Email ?",
+              "fieldType": "email"
+            },
+            {
+              "fieldLabel": "Your feedback ?",
+              "fieldType": "textarea"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -560,
+        -112
+      ],
+      "id": "2f638688-c4f2-4435-86d7-0614d839c3e3",
+      "name": "On form submission",
+      "webhookId": "f62b53d1-7608-48d0-aa5b-12ad84b8cd77"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1CwbWR72T0y8YbGzEQofm2DzGPMxzNMPu6tfPmOtpAQY",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwbWR72T0y8YbGzEQofm2DzGPMxzNMPu6tfPmOtpAQY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Customer Feedback Data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1CwbWR72T0y8YbGzEQofm2DzGPMxzNMPu6tfPmOtpAQY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name  ": "={{ $json['What is Name ?'] }}",
+            "Email ": "={{ $json['What is your Email ?'] }}",
+            "Feedback": "={{ $json['Your feedback ?'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name  ",
+              "displayName": "Name  ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email ",
+              "displayName": "Email ",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Feedback",
+              "displayName": "Feedback",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -352,
+        -112
+      ],
+      "id": "4a9afeef-e4fa-48d6-86f3-609a973247ed",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "7XuFG7LgU9Wzp8m2",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json['Email '] }}",
+        "subject": "=Feedback Form",
+        "emailType": "text",
+        "message": "=Hello {{ $json['Name  '] }} \nYour Form is Submitted. \nWait for Response",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -144,
+        -112
+      ],
+      "id": "59d10ebe-5422-4e3b-b94e-fe3216b75d8b",
+      "name": "Send a message",
+      "webhookId": "e098e53c-c7a9-4281-a794-882b50f368a0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mdA5dXpTn6qKRTRU",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "214020f0-cfcd-4529-b2f4-cab67998573a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "200e6d5e0b957c1c3e2b60282fbba05b2224a53fbedf683c8300bd69c5b9b100"
+  },
+  "id": "DBxCOWGF_oLySKPu0oVZb",
+  "tags": []
+}

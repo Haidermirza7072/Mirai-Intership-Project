@@ -1,0 +1,323 @@
+{
+  "name": "assignment 9",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s",
+          "mode": "list",
+          "cachedResultName": "n8n demo workbook",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "linkedin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "status",
+              "lookupValue": "TO do"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1568,
+        -64
+      ],
+      "id": "76903f28-7198-4f9e-9b8f-8a5d1563dbb9",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "91V48VLoVvI7LAA3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer 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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"query\": \"what are the latests update on {{ $json['Topic name'] }}  ?\",\n  \"search_depth\": \"basic\",\n  \"chunks_per_source\": 3,\n  \"max_results\": 3,\n  \"topic\": \"general\",\n  \"time_range\": null,\n  \"start_date\": \"2026-02-09\",\n  \"end_date\": \"{{$now.format('yyyy-MM-dd')}}\",\n  \"include_answer\": false,\n  \"include_raw_content\": false,\n  \"include_images\": false,\n  \"include_image_descriptions\": false,\n  \"include_favicon\": false,\n  \"include_domains\": [],\n  \"exclude_domains\": [],\n  \"country\": null,\n  \"auto_parameters\": false,\n  \"include_usage\": false\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1360,
+        -64
+      ],
+      "id": "0e28e166-255e-417d-b771-6b377aab3696",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Topic for linkedin post -{{ $('Get row(s) in sheet').item.json['Topic name'] }} \nReference\n\nTitle 1 - {{ $json.results[0].title }}\nArticle1 -{{ $json.results[0].content }}\nurl- {{ $json.results[0].url }}\n\nTitle 2 -{{ $json.results[1].title }}\nArtical 2 -{{ $json.results[1].content }}\nurl2 - {{ $json.results[1].url }}\n\ntittle 3 -{{ $json.results[2].title }}\nArtical 3 -{{ $json.results[2].content }}\nurl3 -{{ $json.results[2].url }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=# Role\n\nAct like a LinkedIn expert who specializes in generating LinkedIn friendly post. You content is engaging for the audience and has a tendency to go viral.\n\n# To do\n\nYou'll get 3 references which will include title of the article, parsed content which is relevant to the topic of post, URL from which content is parsed.\n\n- Using all this information, you have generate a linkedIn friendly post which will get us engagement so that we can have an active profile.\n\n# Output\n\nReturn the title and the content of the article as,\n\nTitle:\n\nContent:"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1152,
+        -64
+      ],
+      "id": "5d8972db-043b-403e-b00e-b4b792a8c282",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1296,
+        144
+      ],
+      "id": "34fe90db-a99b-4551-a5ea-1184554cb833",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "8FRIR5fACY0rNUXT",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s",
+          "mode": "list",
+          "cachedResultName": "n8n demo workbook",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "linkedin",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VkIk6ZV5Z8R9OXRVyVYOnJp2C3GLys3DA2zIHG1Ug8s/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Topic name": "={{ $('Get row(s) in sheet').item.json['Topic name'] }}",
+            "status": "done",
+            "topic name": "={{ $json.output.Title }}",
+            "Article Content": "={{ $json.output.Content }}"
+          },
+          "matchingColumns": [
+            "Topic name"
+          ],
+          "schema": [
+            {
+              "id": "Topic name",
+              "displayName": "Topic name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "topic name",
+              "displayName": "topic name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Article Content",
+              "displayName": "Article Content",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -800,
+        -64
+      ],
+      "id": "f724d3c6-2e20-4027-be4c-b733d692c6c4",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "91V48VLoVvI7LAA3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1760,
+        -64
+      ],
+      "id": "ea1abb8e-065d-49b1-8a22-99bd56b96091",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"title\": {\n      \"type\": \"string\"\n    },\n    \"introduction\": {\n      \"type\": \"string\"\n    },\n    \"bullet_points\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      }\n    },\n    \"conclusion\": {\n      \"type\": \"string\"\n    }\n  },\n  \"required\": [\"title\", \"introduction\", \"bullet_points\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -992,
+        144
+      ],
+      "id": "a1c260fa-bcff-4f08-b4dc-fa5198fe3ce4",
+      "name": "Structured Output Parser"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "e0f086ea-526d-4ed0-a66a-b1fd2dad7666",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "921110670c4911167d7c067eae12bd402347bf286546394fe3413e13e0740cc1"
+  },
+  "id": "X6om9udf4Xr_WgSMeYVDi",
+  "tags": []
+}

@@ -1,0 +1,66 @@
+{
+  "name": "1.Email-trigger",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        -80
+      ],
+      "id": "9a1e6eab-da31-4927-925b-a697952013bf",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "sendTo": "iloveyousana7069@gmail.com",
+        "subject": "its working",
+        "emailType": "text",
+        "message": "hello haider",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -416,
+        -80
+      ],
+      "id": "89dedab6-adfa-4137-8158-f9de438203f6",
+      "name": "Send a message",
+      "webhookId": "fad554c4-bdce-4347-a9ea-667ccd1d904d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "mdA5dXpTn6qKRTRU",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "0bb6c25e-d394-4ce6-bdc4-4983cec3b766",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "200e6d5e0b957c1c3e2b60282fbba05b2224a53fbedf683c8300bd69c5b9b100"
+  },
+  "id": "8opjni4d7BrspJPmQoAOO",
+  "tags": []
+}
